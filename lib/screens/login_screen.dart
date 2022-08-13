@@ -117,10 +117,11 @@ class _LoginForm extends StatelessWidget {
 
                       // await Future.delayed(Duration(seconds: 1));
 
-                      // Validar si el login es correcto
+
+                      //TODO: Validar si el login es correcto
                       // final String? errorMsg = await authService.login(
                       //     loginForm.email, loginForm.password);
-                      final String? errorMsg = null;
+                      final String? errorMsg = null;//Borrar al tener la validacion
 
                       if (errorMsg == null)
                         Navigator.pushReplacementNamed(

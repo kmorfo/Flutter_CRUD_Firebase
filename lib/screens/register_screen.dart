@@ -118,7 +118,7 @@ class _LoginForm extends StatelessWidget {
                       //TODO: Validar si el login es correcto
                       // final String? errorMsg = await authService.createUser(
                       //     loginForm.email, loginForm.password);
-                      final String? errorMsg = null;
+                      final String? errorMsg = null;//Borrar al realizar el registro
 
                       if (errorMsg == null)
                         Navigator.pushReplacementNamed(

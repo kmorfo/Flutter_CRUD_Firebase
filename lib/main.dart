@@ -1,9 +1,22 @@
-import 'package:fire_crud/screens/screens.dart';
-import 'package:fire_crud/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(MyApp());
+import 'package:fire_crud/screens/screens.dart';
+import 'package:fire_crud/services/services.dart';
+import 'package:fire_crud/themes/app_theme.dart';
+
+void main() => runApp(AppState());
+
+class AppState extends StatelessWidget {
+  const AppState({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => AuthService())],
+      child: MyApp(),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +31,7 @@ class MyApp extends StatelessWidget {
         RegisterScreen.routerName: (_) => RegisterScreen(),
         HomeScreen.routerName: (_) => HomeScreen(),
       },
+      scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: AppTheme.lightTheme,
     );
   }
