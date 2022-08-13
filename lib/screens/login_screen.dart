@@ -16,37 +16,39 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 200),
-            CardContainer(
-              child: Column(
-                children: [
-                  SizedBox(height: 10),
-                  Text('Login', style: Theme.of(context).textTheme.headline4),
-                  SizedBox(height: 30),
-                  ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(),
-                    child: const _LoginForm(),
-                  ),
-                ],
+      body: AuthBackground(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 200),
+              CardContainer(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Text('Login', style: Theme.of(context).textTheme.headline4),
+                    SizedBox(height: 30),
+                    ChangeNotifierProvider(
+                      create: (_) => LoginFormProvider(),
+                      child: const _LoginForm(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 30),
-            TextButton(
-                style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(
-                        AppTheme.primary.withOpacity(0.1)),
-                    shape: MaterialStateProperty.all(StadiumBorder())),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, RegisterScreen.routerName);
-                },
-                child: Text('Crear una nueva cuenta.',
-                    style: TextStyle(fontSize: 18, color: Colors.black87))),
-            const SizedBox(height: 30),
-          ],
+              SizedBox(height: 30),
+              TextButton(
+                  style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(
+                          AppTheme.primary.withOpacity(0.1)),
+                      shape: MaterialStateProperty.all(StadiumBorder())),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(
+                        context, RegisterScreen.routerName);
+                  },
+                  child: Text('Crear una nueva cuenta.',
+                      style: TextStyle(fontSize: 18, color: Colors.black87))),
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
@@ -137,13 +139,13 @@ class _LoginForm extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               elevation: 0,
-              color: Colors.deepPurple,
+              color: AppTheme.primary,
               child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   child: Container(
                     child: Text(
-                      loginForm.isLoading ? 'Espere' : 'Ingresar',
+                      loginForm.isLoading ? 'Espere' : 'Iniciar sesión',
                       style: TextStyle(color: Colors.white),
                     ),
                   )),

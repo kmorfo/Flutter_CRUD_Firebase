@@ -1,6 +1,7 @@
 import 'package:fire_crud/providers/providers.dart';
 import 'package:fire_crud/screens/screens.dart';
 import 'package:fire_crud/services/services.dart';
+import 'package:fire_crud/themes/app_theme.dart';
 import 'package:fire_crud/ui/input_decorations.dart';
 import 'package:fire_crud/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -13,37 +14,39 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 200),
-            CardContainer(
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  Text('Registrar',
-                      style: Theme.of(context).textTheme.headline4),
-                  const SizedBox(height: 30),
-                  ChangeNotifierProvider(
-                    create: (_) => LoginFormProvider(),
-                    child: const _LoginForm(),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30),
-            TextButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                    context, LoginScreen.routerName),
-                style: ButtonStyle(
-                  overlayColor:
-                      MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
-                  shape: MaterialStateProperty.all(StadiumBorder()),
+      body: AuthBackground(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 200),
+              CardContainer(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Text('Registrar',
+                        style: Theme.of(context).textTheme.headline4),
+                    const SizedBox(height: 30),
+                    ChangeNotifierProvider(
+                      create: (_) => LoginFormProvider(),
+                      child: const _LoginForm(),
+                    ),
+                  ],
                 ),
-                child: const Text('¿Ya tienes una cuenta?',
-                    style: TextStyle(fontSize: 18, color: Colors.black87))),
-            const SizedBox(height: 30),
-          ],
+              ),
+              const SizedBox(height: 30),
+              TextButton(
+                  onPressed: () => Navigator.pushReplacementNamed(
+                      context, LoginScreen.routerName),
+                  style: ButtonStyle(
+                    overlayColor:
+                        MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
+                    shape: MaterialStateProperty.all(StadiumBorder()),
+                  ),
+                  child: const Text('¿Ya tienes una cuenta?',
+                      style: TextStyle(fontSize: 18, color: Colors.black87))),
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
@@ -134,7 +137,7 @@ class _LoginForm extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               elevation: 0,
-              color: Colors.deepPurple,
+              color: AppTheme.primary,
               child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
