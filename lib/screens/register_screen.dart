@@ -38,8 +38,8 @@ class RegisterScreen extends StatelessWidget {
                   onPressed: () => Navigator.pushReplacementNamed(
                       context, LoginScreen.routerName),
                   style: ButtonStyle(
-                    overlayColor:
-                        MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
+                    overlayColor: MaterialStateProperty.all(
+                        Colors.indigo.withOpacity(0.1)),
                     shape: MaterialStateProperty.all(StadiumBorder()),
                   ),
                   child: const Text('¿Ya tienes una cuenta?',
@@ -116,21 +116,16 @@ class _LoginForm extends StatelessWidget {
                       // await Future.delayed(Duration(seconds: 1));
 
                       //TODO: Validar si el login es correcto
-                      // final String? errorMsg = await authService.createUser(
-                      //     loginForm.email, loginForm.password);
-                      final String? errorMsg = null;//Borrar al realizar el registro
+                      final String? errorMsg = await authService.emailRegister(
+                          loginForm.email, loginForm.password);
+                      // final String? errorMsg = null;//Borrar al tener la validacion
 
                       if (errorMsg == null)
                         Navigator.pushReplacementNamed(
                             context, HomeScreen.routerName);
-
-                      //TODO: Mostrar error en pantalla
+                      else // Mostrar error en pantalla
+                        NotificationsService.showSnackBar(errorMsg);
                       print(errorMsg);
-                      NotificationsService.showSnackBar(errorMsg ?? '');
-
-                      //Mostrar un snakbar para informar al usuario
-                      // final snackBar = SnackBar(content: Text(errorMsg!));
-                      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
                       loginForm.isLoading = false;
                     },
@@ -139,14 +134,57 @@ class _LoginForm extends StatelessWidget {
               elevation: 0,
               color: AppTheme.primary,
               child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                  child: Container(
-                    child: Text(
-                      loginForm.isLoading ? 'Espere' : 'Registrarse',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 60, vertical: 15),
+                child: Container(
+                  child: Text(
+                    loginForm.isLoading ? 'Espere' : 'Registrarse',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 25),
+            MaterialButton(
+              onPressed: loginForm.isLoading
+                  ? null
+                  : () async {
+                      //Quitamos el teclado al pulsar el boton
+                      FocusScope.of(context).unfocus();
+
+                      final authService =
+                          Provider.of<AuthService>(context, listen: false);
+
+                      loginForm.isLoading = true;
+
+                      //Inicia session con cuenta de google
+                      final String? errorMsg =
+                          await authService.signInWithGoogle();
+
+                      if (errorMsg == null)
+                        Navigator.pushReplacementNamed(
+                            context, HomeScreen.routerName);
+                      else // Mostrar error en pantalla
+                        NotificationsService.showSnackBar(errorMsg);
+
+                      loginForm.isLoading = false;
+                    },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              elevation: 0,
+              color: Color.fromARGB(255, 102, 152, 228),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                child: Container(
+                  child: Text(
+                    loginForm.isLoading
+                        ? 'Espere'
+                        : 'Iniciar sesión con Google',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
