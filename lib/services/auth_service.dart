@@ -47,8 +47,9 @@ class AuthService extends ChangeNotifier {
         error = '';
         return null;
       }
-    } on FirebaseAuthException catch (e) {
-      error = '${e.message}';
+    } on Exception catch (e) {
+      error = '${e}';
+      isLoading = false;
       return error;
     } finally {
       isLoading = false;
