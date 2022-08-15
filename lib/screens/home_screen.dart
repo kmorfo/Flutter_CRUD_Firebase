@@ -89,31 +89,42 @@ class _TodoBody extends StatelessWidget {
                       ],
                     )))),
         Expanded(
-            child: SizedBox(
-                child: ListView.builder(
-                    itemCount: todoService.todosList.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        GestureDetector(
-                            onTap: () {
-                              //Se pasan los datos del todo seleccionado al select
-                              txtEditCrl.text =
-                                  todoService.todosList[index].nombre;
+          child: SizedBox(
+            child: ListView.builder(
+              itemCount: todoService.todosList.length,
+              itemBuilder: (_, index) => Dismissible(
+                key: Key(
+                    todoService.todosList[index].id.toString()), //UniqueKey()
+                background: Container(
+                  color: Color.fromARGB(148, 201, 46, 35),
+                ),
+                onDismissed: (DismissDirection direction) {
+                  // print('Se va a borrar ${todoService.todosList[index]}');
+                  todoService.deleteTodo(todoService.todosList[index]);
+                },
+                child: GestureDetector(
+                  onTap: () {
+                    //Se pasan los datos del todo seleccionado al select
+                    txtEditCrl.text = todoService.todosList[index].nombre;
 
-                              todoSel = todoService.todosList[index].clone();
-                              print(todoSel.id);
-                            },
-                            child: TodoCard(
-                              todo: todoService.todosList[index],
-                            )))))
+                    todoSel = todoService.todosList[index].clone();
+                    print(todoSel.id);
+                  },
+                  child: TodoCard(
+                    todo: todoService.todosList[index],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ]),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (!todoService.isLoading) {
               FocusScope.of(context).requestFocus(FocusNode());
-              
 
               todoService.saveTodo(todoSel.clone());
-              
 
               todoForm.formKey.currentState!.reset();
             }
