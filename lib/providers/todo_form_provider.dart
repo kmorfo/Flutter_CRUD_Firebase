@@ -7,6 +7,4 @@ class TodoFormProvider extends ChangeNotifier {
 
   TodoFormProvider(this.todo);
 
-  
-
 }

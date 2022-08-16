@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final todo = todoFromMap(jsonString);
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -44,9 +40,9 @@ class Todo {
         "blue": blue,
         "fecha": fecha,
     };
+
   Todo clone() => Todo(id: id, nombre: nombre, fecha: fecha, red: red, green: green, blue: blue);
-
-
+  
   Color getColor() {
     return Color.fromRGBO(red, green, blue, 1);
   }

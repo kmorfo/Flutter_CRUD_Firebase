@@ -13,10 +13,8 @@ class LoginFormProvider extends ChangeNotifier {
     this._isLoading = value;
     notifyListeners();
   }
-
+  
   bool isValidForm() {
-    // print(formKey.currentState?.validate());
-    // print('$email $password');
     return formKey.currentState?.validate() ?? false;
   }
 }

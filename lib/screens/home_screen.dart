@@ -1,14 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'package:fire_crud/models/todo.dart';
 import 'package:fire_crud/screens/screens.dart';
 import 'package:fire_crud/providers/providers.dart';
 import 'package:fire_crud/widgets/widgets.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:fire_crud/themes/app_theme.dart';
 import 'package:fire_crud/services/services.dart';
 
@@ -36,9 +34,8 @@ class _TodoBody extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final todoForm = Provider.of<TodoFormProvider>(context);
     Todo todoSel = todoForm.todo;
-    Color colorSelect;
 
-    //Se agrega el para poder editar el texto desde codigo
+    //Se agrega para poder editar el texto desde codigo
     var txtEditCrl = TextEditingController();
 
     const placeholderImage =
@@ -46,7 +43,7 @@ class _TodoBody extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
-          title: Text('ToDo Firebase'),
+          title: const Text('ToDo Firebase'),
           leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
@@ -56,11 +53,11 @@ class _TodoBody extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  authService.signOut();
+                  authService.signOut(); //Cierra session
                   Navigator.pushReplacementNamed(
                       context, LoginScreen.routerName);
                 },
-                icon: Icon(Icons.login_outlined))
+                icon: const Icon(Icons.login_outlined))
           ]),
       body: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         SizedBox(
@@ -69,10 +66,8 @@ class _TodoBody extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Form(
                     key: todoForm.formKey,
-                    child: Stack(
-                      alignment: Alignment.topLeft,
-                      children: [
-                        TextFormField(
+                    child: Stack(alignment: Alignment.topLeft, children: [
+                      TextFormField(
                           controller: txtEditCrl,
                           onChanged: (value) {
                             todoSel.nombre = value;
@@ -80,58 +75,52 @@ class _TodoBody extends StatelessWidget {
                           decoration: const InputDecoration(
                             hintText: 'Limpiar el horno',
                             labelText: 'Contenido del ToDo',
-                          ),
-                        ),
-                        Positioned(
-                            top: 5,
-                            right: 0,
-                            child: _ColorSelect(todoSel: todoSel)),
-                      ],
-                    )))),
+                          )),
+                      Positioned(
+                          top: 5,
+                          right: 0,
+                          child: _ColorSelect(todoSel: todoSel))
+                    ])))),
         Expanded(
-          child: SizedBox(
-            child: ListView.builder(
-              itemCount: todoService.todosList.length,
-              itemBuilder: (_, index) => Dismissible(
-                key: Key(
-                    todoService.todosList[index].id.toString()), //UniqueKey()
-                background: Container(
-                  color: Color.fromARGB(148, 201, 46, 35),
-                ),
-                onDismissed: (DismissDirection direction) {
-                  // print('Se va a borrar ${todoService.todosList[index]}');
-                  todoService.deleteTodo(todoService.todosList[index]);
-                },
-                child: GestureDetector(
-                  onTap: () {
-                    //Se pasan los datos del todo seleccionado al select
-                    txtEditCrl.text = todoService.todosList[index].nombre;
+            child: SizedBox(
+                child: ListView.builder(
+                    itemCount: todoService.todosList.length,
+                    itemBuilder: (_, index) => Dismissible(
+                        key: Key(todoService.todosList[index].id
+                            .toString()), //UniqueKey()
+                        background: Container(
+                          color: const Color.fromARGB(148, 201, 46, 35),
+                        ),
+                        onDismissed: (DismissDirection direction) {
+                          // print('Se va a borrar ${todoService.todosList[index]}');
+                          todoService.deleteTodo(todoService.todosList[index]);
+                        },
+                        child: GestureDetector(
+                            onTap: () {
+                              //Se pasan los datos del todo seleccionado al select
+                              txtEditCrl.text =
+                                  todoService.todosList[index].nombre;
 
-                    todoSel = todoService.todosList[index].clone();
-                    print(todoSel.id);
-                  },
-                  child: TodoCard(
-                    todo: todoService.todosList[index],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+                              todoSel = todoService.todosList[index].clone();
+                            },
+                            child: TodoCard(
+                              todo: todoService.todosList[index],
+                            ))))))
       ]),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (!todoService.isLoading) {
               FocusScope.of(context).requestFocus(FocusNode());
 
-              todoService.saveTodo(todoSel.clone());
+              todoService.saveTodo(todoSel.clone()); //Guarda el ToDo actual
 
-              todoForm.formKey.currentState!.reset();
+              todoForm.formKey.currentState!
+                  .reset(); //se borra el contenido del formulario
             }
           },
           child: todoService.isLoading
-              ? CircularProgressIndicator(color: Colors.white)
-              : Icon(Icons.add)),
+              ? const CircularProgressIndicator(color: Colors.white)
+              : const Icon(Icons.add)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
@@ -151,8 +140,6 @@ class _ColorSelectState extends State<_ColorSelect> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        // Color pickerColor = Color(0xff443a49);
-        // Color currentColor = Color(0xff443a49);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -162,19 +149,18 @@ class _ColorSelectState extends State<_ColorSelect> {
                 titlePadding: const EdgeInsets.all(5),
                 contentPadding: const EdgeInsets.all(25),
                 content: SingleChildScrollView(
-                  child: MaterialPicker(
-                    pickerColor: widget.todoSel.getColor(),
-                    onColorChanged: (colorChanged) {
-                      widget.todoSel.red = colorChanged.red;
-                      widget.todoSel.green = colorChanged.green;
-                      widget.todoSel.blue = colorChanged.blue;
+                    child: MaterialPicker(
+                  pickerColor: widget.todoSel.getColor(),
+                  onColorChanged: (colorChanged) {
+                    widget.todoSel.red = colorChanged.red;
+                    widget.todoSel.green = colorChanged.green;
+                    widget.todoSel.blue = colorChanged.blue;
 
-                      setState(() {});
-                    },
-                    enableLabel: false,
-                    portraitOnly: true,
-                  ),
-                ),
+                    setState(() {}); //actualizamos el estado
+                  },
+                  enableLabel: false,
+                  portraitOnly: true,
+                )),
                 actions: [
                   Center(
                     child: ElevatedButton(

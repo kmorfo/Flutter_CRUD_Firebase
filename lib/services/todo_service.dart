@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_crud/models/todo.dart';
 import 'package:fire_crud/services/notifications_service.dart';
@@ -15,9 +12,9 @@ class TodoService extends ChangeNotifier {
 
   late Todo todoSel;
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
-  void set isLoading(bool value) => _isLoading;
+  set isLoading(bool value) => _isLoading;
   bool get isLoading => _isLoading;
 
   TodoService() {
@@ -30,23 +27,16 @@ class TodoService extends ChangeNotifier {
   Future<List<Todo>> loadTodos() async {
     isLoading = true;
     notifyListeners();
-    collection = await FirebaseAuth.instance.currentUser!.uid;
+    collection = FirebaseAuth.instance.currentUser!.uid;
 
-    final db = await FirebaseFirestore.instance
-        .collection(collection)
-        .get()
-        .then((value) {
+    await FirebaseFirestore.instance.collection(collection).get().then((value) {
       for (var doc in value.docs) {
         final data = doc.data() as Map<String, dynamic>;
         final Todo todoTMP = Todo.fromMap(data);
-        // print(todoTMP.toJson());
-        // print("${doc.id} => ${doc.data()}");
         todosList.add(todoTMP.clone());
       }
       notifyListeners();
     });
-
-    //TODO Aqui el codigo para obtener los todos de firebase
 
     isLoading = false;
     notifyListeners();
@@ -76,8 +66,8 @@ class TodoService extends ChangeNotifier {
       print('se add');
     }
 
-    //Inserta el todo en la colleccion del usuario
-    final db = FirebaseFirestore.instance
+    //Inserta el ToDo en la colleccion del usuario
+    FirebaseFirestore.instance
         .collection(collection)
         .doc(todo.id)
         .set(todo.toMap());
@@ -92,17 +82,17 @@ class TodoService extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    //TODO Aqui el codigo para borrar el todo firebase
     final index = todosList.indexWhere(((element) => element.id == todo.id));
     print('Se va a borrar ${todo.id} esta en la posicion ${index}');
 
+    //codigo para borrar el todo firebase
     todosList.removeAt(index);
-    final db = FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection(collection)
         .doc(todo.id)
         .delete()
         .onError((error, stackTrace) =>
-            NotificationsService.showSnackBar('${error}'));
+            NotificationsService.showSnackBar('$error'));
 
     isLoading = false;
     notifyListeners();
